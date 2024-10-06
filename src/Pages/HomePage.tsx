@@ -60,28 +60,40 @@ function HomePage() {
         localStorage.setItem("users", JSON.stringify(users));
     };
 
-    useEffect(() => {
         const loadUsers = async () => {
-        try {
-            setLoading(true);
-            const storedUsers = localStorage.getItem("users");
-            if (storedUsers) {
-            setUsers(JSON.parse(storedUsers));
-            } else {
-            const data = await fetchUsers();
-            setUsers(data);
-            setError(null);
-            saveUsersToLocalStorage(data);
+            try {
+                setLoading(true);
+                const storedUsers = localStorage.getItem("users");
+                if (storedUsers) {
+                setUsers(JSON.parse(storedUsers));
+                } else {
+                const data = await fetchUsers();
+                setUsers(data);
+                localStorage.setItem("users", JSON.stringify(data));
+                }
+                setError(null);
+            } catch (error) {
+                setError("Failed to fetch users. Please try again later.");
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            setError("Failed to fetch users. Please try again later.");
-        } finally {
-            setLoading(false);
-        }
         };
 
-        loadUsers();
-    }, []);
+        useEffect(() => {
+            loadUsers();
+        });
+
+        
+        useEffect(() => {
+            const handleFocus = () => {
+                loadUsers();
+            };
+            window.addEventListener('focus', handleFocus);
+            return () => {
+                window.removeEventListener('focus', handleFocus);
+            };
+        }, []);
+
 
     // Listen for new user creation events
     useUserCreationListener((newUser) => {

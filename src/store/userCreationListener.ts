@@ -1,23 +1,22 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { User } from './users';
 
-const USER_CREATED_EVENT = 'userCreated';
+type UserCreationListener = (user: User) => void;
 
-export const emitUserCreated = (user: User) => {
-    const event = new CustomEvent(USER_CREATED_EVENT, { detail: user });
-    window.dispatchEvent(event);
-    };
+const listeners: UserCreationListener[] = [];
 
-    export const useUserCreationListener = (callback: (user: User) => void) => {
-    useEffect(() => {
-        const handler = (event: CustomEvent<User>) => {
-        callback(event.detail);
-        };
+export function emitUserCreated(user: User) {
+    listeners.forEach(listener => listener(user));
+}
 
-        window.addEventListener(USER_CREATED_EVENT, handler as EventListener);
-
+export function useUserCreationListener(callback: UserCreationListener) {
+    React.useEffect(() => {
+        listeners.push(callback);
         return () => {
-        window.removeEventListener(USER_CREATED_EVENT, handler as EventListener);
+        const index = listeners.indexOf(callback);
+        if (index > -1) {
+            listeners.splice(index, 1);
+        }
         };
     }, [callback]);
-};
+}

@@ -44,6 +44,10 @@ function CreatePage() {
                 // Create the new user
                 const createdUser = await createUser(newUser);
 
+                // Update localStorage
+                const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+                localStorage.setItem("users", JSON.stringify([...storedUsers, createdUser]));
+
                 // Emit user created event
                 emitUserCreated(createdUser);
                 console.log('User emitted:', createdUser); // Debugging line
