@@ -22,6 +22,7 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -228,6 +229,15 @@ function HomePage() {
         <Heading as="h1" size="xl" textAlign="center" textColor={'teal.400'} mb={6}>
             Users List
         </Heading>
+
+        {/* Display Current User Editing Information */}
+        {currentUser && (
+            <Box mb={6}>
+                <Heading size="lg">Editing User: {currentUser.name}</Heading>
+                <Text>Email: {currentUser.email}</Text>
+                <Text>Username: {currentUser.username}</Text>
+            </Box>
+        )}
 
         {/* Desktop Table */}
         <TableContainer display={{ base: "none", md: "block" }} py={12}>

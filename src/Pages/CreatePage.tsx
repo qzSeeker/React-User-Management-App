@@ -8,7 +8,7 @@ function CreatePage() {
         name: '',
         username: '',
         email: '',
-        phone: 0,
+        phone: '',
         website: '',
     });
 
@@ -52,7 +52,7 @@ function CreatePage() {
                     name: '',
                     username: '',
                     email: '',
-                    phone: 0,
+                    phone: '',
                     website: '',
                 });
                 
