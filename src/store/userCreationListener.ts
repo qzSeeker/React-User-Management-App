@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from './users';
+import { User } from './types';
 
 type UserCreationListener = (user: User) => void;
 

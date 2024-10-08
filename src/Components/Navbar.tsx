@@ -1,10 +1,10 @@
 import {
-  Button,
-  Container,
-  Flex,
-  HStack,
-  Text,
-  useColorMode,
+    Button,
+    Container,
+    Flex,
+    HStack,
+    Text,
+    useColorMode,
 } from "@chakra-ui/react";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { Link } from "react-router-dom";

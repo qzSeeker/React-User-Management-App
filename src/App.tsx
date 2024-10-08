@@ -9,13 +9,15 @@ function App() {
 
   return (
     <>
-      <Box minH={"100vh"}>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/create' element={<CreatePage />} />
-        </Routes>
-      </Box>
+      <div className='w-full h-max flex justify-center items-center'>
+        <Box minH={"100vh"} minW={"85vw"}>
+          <Navbar />
+          <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/create' element={<CreatePage />} />
+          </Routes>
+        </Box>
+      </div>
     </>
   )
 }

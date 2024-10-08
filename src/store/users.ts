@@ -1,20 +1,8 @@
+import { User, UserCreationData, UserInput } from "./types";
+import { v4 as uuidv4 } from 'uuid';
+
 const API_URL = 'https://jsonplaceholder.typicode.com/';
 
-// Define a type for the user data
-export interface User {
-    id?: number;
-    name: string;
-    username: string;
-    email: string;
-    phone?: string;
-    website: string;
-}
-
-export interface UserInput {
-    name: string;
-    username: string;
-    email: string;
-}
 
 // Fetching All Users
 export const fetchUsers = async (): Promise<User[]> => {
@@ -31,7 +19,10 @@ export const fetchUsers = async (): Promise<User[]> => {
 };
 
 // Creating a New User
-export const createUser = async (userData: UserInput): Promise<User> => {
+export const createUser = async (userData: UserCreationData): Promise<User> => {
+    const clientGeneratedId = uuidv4(); // Generate ID on the client side
+    console.log('Client generated ID:', clientGeneratedId);
+
     try {
         const response = await fetch(`${API_URL}users`, {
             method: 'POST',
@@ -40,10 +31,30 @@ export const createUser = async (userData: UserInput): Promise<User> => {
                 'Content-Type': 'application/json; charset=UTF-8',
             },
         });
+
         if (!response.ok) {
-            throw new Error('Network error: Something went wrong with response');
+            throw new Error('Failed to create user');
         }
-        return await response.json();
+
+        const createdUser: User = await response.json();
+
+        return {
+            ...createdUser,
+            id: clientGeneratedId,
+            address: createdUser.address || {
+                street: '',
+                suite: '',
+                city: '',
+                zipcode: '',
+                geo: { lat: '', lng: '' }
+            },
+            company: createdUser.company || {
+                name: '',
+                catchPhrase: '',
+                bs: ''
+            }
+        };
+
     } catch (error) {
         console.error('There was a problem creating a user:', error);
         throw error;

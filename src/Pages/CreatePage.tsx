@@ -1,10 +1,11 @@
 import { Box, Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input, useColorModeValue, useToast, VStack } from "@chakra-ui/react"
 import { useState } from "react"
-import { createUser, User, UserInput } from "../store/users"
 import { emitUserCreated } from "../store/userCreationListener";
+import { User, UserCreationData, UserInput } from "../store/types";
+import { createUser } from "../store/users";
 
 function CreatePage() {
-    const [newUser, setNewUser] = useState<User>({
+    const [newUser, setNewUser] = useState<UserInput>({
         name: '',
         username: '',
         email: '',
@@ -41,16 +42,30 @@ function CreatePage() {
 
             setIsLoading(true);
             try {
-                // Create the new user
-                const createdUser = await createUser(newUser);
-
-                // Update localStorage
-                const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+                const userCreationData: UserCreationData = {
+                    ...newUser,
+                    address: {
+                        street: '',
+                        suite: '',
+                        city: '',
+                        zipcode: '',
+                        geo: { lat: '', lng: '' }
+                    },
+                    company: {
+                        name: '',
+                        catchPhrase: '',
+                        bs: ''
+                    },
+                };
+    
+                const createdUser = await createUser(userCreationData);
+    
+                 // Update localStorage
+                const storedUsers = JSON.parse(localStorage.getItem("users") || "[]") as User[];
                 localStorage.setItem("users", JSON.stringify([...storedUsers, createdUser]));
 
                 // Emit user created event
                 emitUserCreated(createdUser);
-                console.log('User emitted:', createdUser); // Debugging line
 
                 setNewUser({
                     name: '',
@@ -67,7 +82,6 @@ function CreatePage() {
                     duration: 5000,
                     isClosable: true,
                 });
-                console.log('User created successfully:', createdUser);
             } catch (error) {
                 toast({
                     title: "Error",
@@ -84,10 +98,12 @@ function CreatePage() {
 
     return (
         <Container maxW={"container.sm"} marginTop={20}>
+
             <VStack spacing={8}>
             <Heading as={"h1"} size={"2xl"} textAlign={"center"} mb={8} textColor={'teal.400'}>
                 Create New User
             </Heading>
+
             <Box
                 w={"full"}
                 bg={useColorModeValue("white", "gray.700")}
@@ -157,11 +173,13 @@ function CreatePage() {
                 >
                     Create User
                 </Button>
+
                 </VStack>
             </Box>
+            
             </VStack>
         </Container>
     )
-}
+};
 
-export default CreatePage
+export default CreatePage;
